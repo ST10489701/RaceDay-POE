@@ -28,3 +28,5 @@ Organiser can create event POST/ events
 Participant can register POST/ enrolments
 
 Auth:   JWT Bearer 
+
+BibNumber unique per event
