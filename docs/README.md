@@ -34,3 +34,5 @@ BibNumber unique per event
 Build: validate.yml passing 
 
 Ready for ARC 
+
+Final checks done
