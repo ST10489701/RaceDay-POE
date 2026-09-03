@@ -20,3 +20,5 @@ https://youtu.be/Z06iSLwJxrs?si=yxxHgkrvshpqGJ_S
 ##ERD: 6 tables Users, Events, Categories, Routes, EventEnrolments and Results
 
 ## SQL Features: Check Role Organiser Participants
+
+API Count: 27 endpoints 
