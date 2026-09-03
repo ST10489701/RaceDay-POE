@@ -22,3 +22,5 @@ https://youtu.be/Z06iSLwJxrs?si=yxxHgkrvshpqGJ_S
 ## SQL Features: Check Role Organiser Participants
 
 API Count: 27 endpoints 
+
+Organiser can create event POST/ events
