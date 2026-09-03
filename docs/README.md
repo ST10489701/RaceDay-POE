@@ -30,3 +30,5 @@ Participant can register POST/ enrolments
 Auth:   JWT Bearer 
 
 BibNumber unique per event
+
+Build: validate.yml passing 
