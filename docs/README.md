@@ -32,3 +32,5 @@ Auth:   JWT Bearer
 BibNumber unique per event
 
 Build: validate.yml passing 
+
+Ready for ARC 
