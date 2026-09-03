@@ -1,0 +1,15 @@
+name: RaceDay Part 1 CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify docs
+        run: |
+          ls -R docs
+          test -d docs
+          test -f docs/erd.png
+          test -f docs/api_endpoint_plan.md
+          test -f docs/RaceDay.sql
+          echo "PASSED"
