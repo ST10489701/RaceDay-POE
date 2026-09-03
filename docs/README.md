@@ -17,4 +17,6 @@ https://youtu.be/Z06iSLwJxrs?si=yxxHgkrvshpqGJ_S
 - API Plan: docs/api_endpoint_plan.md
 - SQL: docs/RaceDay.sql
 
-ERD: 6 tables Users, Events, Categories, Routes, EventEnrolments and Results
+##ERD: 6 tables Users, Events, Categories, Routes, EventEnrolments and Results
+
+## SQL Features: Check Role Organiser Participants
