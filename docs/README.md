@@ -24,3 +24,5 @@ https://youtu.be/Z06iSLwJxrs?si=yxxHgkrvshpqGJ_S
 API Count: 27 endpoints 
 
 Organiser can create event POST/ events
+
+Participant can register POST/ enrolments
