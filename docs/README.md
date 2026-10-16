@@ -40,3 +40,15 @@ Ready for ARC
 Final checks done
 
 Ready for submission
+
+## RaceDay API-Part 2
+Project Overview
+RaceDay API is a web for managing race, event categories, participant enrrolments, routes and race results. It is developed using C# and ASP.NET Core with Entity Framework Core and SQL Server.
+## Technology used
+C#
+ASP.NET Core Web API
+.NET 8
+Entity Framework Core
+Microsoft SQL Server
+xUnit for automated testing
+Github Actions for continuous integration
