@@ -1,0 +1,32 @@
+@model EnrolmentsViewModel
+@{
+    ViewData["Title"] = "Enrolments - " + Model.Event.EventName;
+}
+<div class="mb-3"><a asp-action="Events" class="text-decoration-none"><i class="bi bi-arrow-left"></i> All events</a></div>
+<h1 class="page-title">Enrolments</h1>
+<p class="text-muted">@Model.Event.EventName - @ViewHelpers.FormatDate(Model.Event.EventDate) - @(Model.Enrolments.Count(e => e.Status == "Confirmed")) confirmed</p>
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="empty-state"><i class="bi bi-people"></i><p>Nobody has entered this event yet.</p></div>
+}
+else
+{
+    <div class="table-responsive card shadow-sm">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Bib</th><th>Participant</th><th>Category</th><th>Enrolled on</th><th>Status</th></tr></thead>
+            <tbody>
+                @foreach (var enrolment in Model.Enrolments)
+                {
+                    <tr>
+                        <td>@(enrolment.BibNumber ?? "-")</td>
+                        <td class="fw-semibold">@enrolment.ParticipantName</td>
+                        <td>@enrolment.CategoryName</td>
+                        <td>@enrolment.EnrolmentDate.ToString("dd MMM yyyy")</td>
+                        <td><span class="badge @ViewHelpers.StatusClass(enrolment.Status)">@enrolment.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

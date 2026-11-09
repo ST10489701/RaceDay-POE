@@ -1,0 +1,55 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Find your next race";
+}
+<section class="hero mb-4">
+    <h1>Find your next <span>race</span></h1>
+    <p>Browse road runs, walks and cycle events across South Africa, pick your category and enter in a few clicks.</p>
+</section>
+
+<form method="get" asp-controller="Home" asp-action="Index" class="filter-bar card card-body shadow-sm mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label for="search" class="form-label">Search</label>
+            <input id="search" name="search" value="@Model.Search" class="form-control" placeholder="Event name or place" />
+        </div>
+        <div class="col-md-3">
+            <label for="type" class="form-label">Event type</label>
+            <select id="type" name="type" class="form-select">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.Type))">All types</option>
+                <option value="Run" selected="@(Model.Type == "Run")">Run</option>
+                <option value="Walk" selected="@(Model.Type == "Walk")">Walk</option>
+                <option value="Cycle" selected="@(Model.Type == "Cycle")">Cycle</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div class="form-check mb-2">
+                <input type="hidden" name="upcomingOnly" value="false" />
+                <input class="form-check-input" type="checkbox" id="upcomingOnly" name="upcomingOnly" value="true" checked="@Model.UpcomingOnly" />
+                <label class="form-check-label" for="upcomingOnly">Upcoming events only</label>
+            </div>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-brand">Filter</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="empty-state">
+        <i class="bi bi-search"></i>
+        <p>No events match your filters. Try a different search.</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_EventCard" model="ev" />
+            </div>
+        }
+    </div>
+}

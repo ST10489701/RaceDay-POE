@@ -1,0 +1,66 @@
+@model ResultsViewModel
+@{
+    ViewData["Title"] = "Results - " + Model.Event.EventName;
+}
+<div class="mb-3"><a asp-action="Events" class="text-decoration-none"><i class="bi bi-arrow-left"></i> All events</a></div>
+<h1 class="page-title">Results</h1>
+<p class="text-muted">@Model.Event.EventName - @ViewHelpers.FormatDate(Model.Event.EventDate)</p>
+
+@if (!Model.EventHasStarted)
+{
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> Results can only be captured on or after the event date.</div>
+}
+
+@if (Model.Rows.Count == 0)
+{
+    <div class="empty-state"><i class="bi bi-stopwatch"></i><p>There are no confirmed participants to capture results for.</p></div>
+}
+else
+{
+    <div class="table-responsive card shadow-sm">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Bib</th><th>Participant</th><th>Category</th><th>Result</th></tr></thead>
+            <tbody>
+                @foreach (var row in Model.Rows)
+                {
+                    <tr>
+                        <td>@(row.Enrolment.BibNumber ?? "-")</td>
+                        <td class="fw-semibold">@row.Enrolment.ParticipantName</td>
+                        <td>@row.Enrolment.CategoryName</td>
+                        <td>
+                            @if (row.Result is not null)
+                            {
+                                <span class="badge @ViewHelpers.StatusClass(row.Result.Status)">@row.Result.Status</span>
+                                @if (row.Result.Status == "Finished" && row.Result.Position is not null)
+                                {
+                                    <span class="ms-2">@ViewHelpers.FormatTime(row.Result.FinishTime) - @ViewHelpers.Ordinal(row.Result.Position.Value) of @row.Result.TotalFinishers</span>
+                                }
+                            }
+                            else if (Model.EventHasStarted)
+                            {
+                                <form asp-controller="Organiser" asp-action="CaptureResult" method="post" class="row g-2 align-items-center">
+                                    <input type="hidden" name="EventId" value="@Model.Event.EventId" />
+                                    <input type="hidden" name="EnrolmentId" value="@row.Enrolment.EnrolmentId" />
+                                    <div class="col-auto">
+                                        <select name="Status" class="form-select form-select-sm">
+                                            <option value="Finished">Finished</option>
+                                            <option value="DNF">DNF</option>
+                                            <option value="DQ">DQ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto"><input name="FinishTime" class="form-control form-control-sm" placeholder="hh:mm:ss" /></div>
+                                    <div class="col-auto"><input name="Position" type="number" min="1" class="form-control form-control-sm" placeholder="Position" /></div>
+                                    <div class="col-auto"><button type="submit" class="btn btn-brand btn-sm">Save and publish</button></div>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not yet</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

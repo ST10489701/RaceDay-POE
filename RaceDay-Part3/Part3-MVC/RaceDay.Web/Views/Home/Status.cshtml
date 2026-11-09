@@ -1,0 +1,10 @@
+@model StatusViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="empty-state my-5">
+    <div class="status-code">@Model.Code</div>
+    <h1 class="page-title">@Model.Title</h1>
+    <p>@Model.Message</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-brand">Back to RaceDay</a>
+</div>

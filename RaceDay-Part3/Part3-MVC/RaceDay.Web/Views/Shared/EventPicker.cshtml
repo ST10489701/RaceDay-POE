@@ -1,0 +1,27 @@
+@model EventPickerViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+<h1 class="page-title">@Model.Title</h1>
+<p class="text-muted">@Model.Description</p>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="empty-state">
+        <i class="bi bi-calendar-x"></i>
+        <p>You have not created any events yet.</p>
+        <a asp-controller="Organiser" asp-action="CreateEvent" class="btn btn-brand">Create your first event</a>
+    </div>
+}
+else
+{
+    <div class="list-group shadow-sm">
+        @foreach (var ev in Model.Events)
+        {
+            <a asp-controller="Organiser" asp-action="@Model.TargetAction" asp-route-eventId="@ev.EventId" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><strong>@ev.EventName</strong> <span class="text-muted">- @ViewHelpers.FormatDate(ev.EventDate)</span></span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        }
+    </div>
+}

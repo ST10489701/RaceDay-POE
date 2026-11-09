@@ -1,0 +1,105 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    ViewData["Title"] = ev.EventName;
+    var banner = ViewHelpers.MediaUrl(ev.BannerImage);
+    var isParticipant = User.IsInRole(AppRoles.Participant);
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var hasHappened = ev.EventDate < DateOnly.FromDateTime(DateTime.Today);
+}
+<div class="mb-3"><a asp-controller="Home" asp-action="Index" class="text-decoration-none"><i class="bi bi-arrow-left"></i> All events</a></div>
+
+@if (banner is not null)
+{
+    <img src="@banner" class="detail-banner mb-4" alt="Banner for @ev.EventName" />
+}
+else
+{
+    <div class="detail-banner detail-banner-placeholder mb-4"><i class="bi @ViewHelpers.TypeIcon(ev.EventType)"></i></div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <span class="badge badge-type mb-2"><i class="bi @ViewHelpers.TypeIcon(ev.EventType)"></i> @ev.EventType</span>
+        <h1 class="page-title">@ev.EventName</h1>
+        <p class="lead">@ev.Description</p>
+
+        <h2 class="section-title">Categories</h2>
+        @if (ev.Categories.Count == 0)
+        {
+            <p class="text-muted">The organiser has not added any categories yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr><th>Category</th><th>Distance</th><th>Entry fee</th><th>Places</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in ev.Categories)
+                        {
+                            <tr>
+                                <td><strong>@category.CategoryName</strong></td>
+                                <td>@(category.DistanceKm is null ? "-" : category.DistanceKm.Value.ToString("0.##") + " km")</td>
+                                <td>@(category.EntryFee == 0 ? "Free" : "R" + category.EntryFee.ToString("0.00"))</td>
+                                <td>@(category.MaxParticipants is null ? "Unlimited" : category.MaxParticipants.Value.ToString())</td>
+                                <td class="text-end">
+                                    @if (isParticipant && Model.MyEnrolment is null && !hasHappened)
+                                    {
+                                        <form asp-controller="Events" asp-action="Enrol" method="post">
+                                            <input type="hidden" name="eventId" value="@ev.EventId" />
+                                            <input type="hidden" name="categoryId" value="@category.CategoryId" />
+                                            <button type="submit" class="btn btn-brand btn-sm">Enrol</button>
+                                        </form>
+                                    }
+                                    else if (Model.MyEnrolment is not null && Model.MyEnrolment.CategoryId == category.CategoryId)
+                                    {
+                                        <span class="badge @ViewHelpers.StatusClass(Model.MyEnrolment.Status)">You are enrolled</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (!isAuthenticated && !hasHappened)
+        {
+            <div class="alert alert-info"><a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Events", new { id = ev.EventId })">Log in</a> or <a asp-controller="Account" asp-action="Register">sign up</a> as a Participant to enrol.</div>
+        }
+        @if (hasHappened)
+        {
+            <div class="alert alert-secondary">This event has already taken place.</div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card card-body shadow-sm info-card">
+            <h2 class="section-title">Event details</h2>
+            <p><i class="bi bi-calendar-event"></i> <strong>@ViewHelpers.FormatDate(ev.EventDate)</strong></p>
+            <p><i class="bi bi-geo-alt"></i> @ev.Location</p>
+            <p><i class="bi bi-rulers"></i> @ev.DistanceKm.ToString("0.##") km</p>
+            <p class="mb-0"><i class="bi bi-person-badge"></i> Organised by @ev.OrganiserName</p>
+        </div>
+
+        @if (ev.Routes.Count > 0)
+        {
+            <div class="card card-body shadow-sm info-card mt-3">
+                <h2 class="section-title">Route information</h2>
+                @foreach (var route in ev.Routes)
+                {
+                    <p class="mb-2">
+                        <strong>@route.RouteName</strong><br />
+                        <span class="text-muted small">@route.DistanceKm.ToString("0.##") km@(route.ElevationGainM is null ? "" : " - " + route.ElevationGainM + " m climb")</span>
+                        @if (!string.IsNullOrEmpty(route.MapUrl))
+                        {
+                            <br /><a href="@route.MapUrl" target="_blank" rel="noopener">View route map</a>
+                        }
+                    </p>
+                }
+            </div>
+        }
+    </div>
+</div>

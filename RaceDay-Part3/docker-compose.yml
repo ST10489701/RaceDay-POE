@@ -1,0 +1,47 @@
+# One command starts the whole RaceDay system:  docker compose up --build
+#   web    -> http://localhost:8080          (the MVC site, Part 3)
+#   api    -> http://localhost:5080/swagger  (the API, Part 2)
+#   sql    -> SQL Server database
+#   azurite-> local Azure Blob Storage emulator (swap for a real Azure Storage account in production)
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "RaceDay#2026pw"
+    volumes:
+      - sql-data:/var/opt/mssql
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite-blob --blobHost 0.0.0.0 --skipApiVersionCheck
+    volumes:
+      - blob-data:/data
+
+  api:
+    build: ./Part2-API/RaceDay.Api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__RaceDayDb: "Server=sql,1433;Database=RaceDayApiDB;User Id=sa;Password=RaceDay#2026pw;TrustServerCertificate=True"
+      BlobStorage__ConnectionString: "UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite"
+      BlobStorage__ContainerName: "raceday-images"
+    ports:
+      - "5080:8080"
+    depends_on:
+      - sql
+      - azurite
+    restart: on-failure
+
+  web:
+    build: ./Part3-MVC/RaceDay.Web
+    environment:
+      Api__BaseUrl: "http://api:8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+    restart: on-failure
+
+volumes:
+  sql-data:
+  blob-data:
