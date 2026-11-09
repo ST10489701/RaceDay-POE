@@ -52,3 +52,6 @@ Entity Framework Core
 Microsoft SQL Server
 xUnit for automated testing
 Github Actions for continuous integration
+
+RaceDay
+RaceDay is a full-stack web platform for South African road running, walking and cycling community. Many events are still run with paper entries and spreadsheet. RaceDay replaces that with one system where Organisers create and manage events and capture results, and Participants find events, enter them by choosing a category, and follow their race history.
